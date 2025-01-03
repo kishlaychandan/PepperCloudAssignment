@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; // Import Link
-
+import config from "../config";
 const ViewFormPage = () => {
   const [forms, setForms] = useState([]);
 
   useEffect(() => {
     const fetchForms = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/forms");
+        const response = await fetch(`${config.API_BASE_URL}/forms`);
         if (!response.ok) throw new Error("Failed to fetch forms");
         const data = await response.json();
         setForms(data);
@@ -24,7 +24,7 @@ const ViewFormPage = () => {
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/forms/${formId}`, { method: "DELETE" });
+      const response = await fetch(`${config.API_BASE_URL}/forms/${formId}`, { method: "DELETE" });
       if (!response.ok) throw new Error("Failed to delete form");
       setForms(forms.filter((form) => form._id !== formId));
       alert("Form deleted successfully.");

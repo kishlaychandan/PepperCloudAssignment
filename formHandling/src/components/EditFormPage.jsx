@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-
+import config from "../config";
 const EditFormPage = () => {
   const { id } = useParams(); // Use the useParams hook to get the form ID
   const [form, setForm] = useState(null);
@@ -10,7 +10,7 @@ const EditFormPage = () => {
   useEffect(() => {
     const fetchForm = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/forms/${id}`);
+        const response = await fetch(`${config.API_BASE_URL}/forms/${id}`);
         if (!response.ok) throw new Error("Failed to fetch form");
         const data = await response.json();
         setForm(data);
@@ -26,7 +26,7 @@ const EditFormPage = () => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/forms/${form._id}`, {
+      const response = await fetch(`${config.API_BASE_URL}/forms/${form._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

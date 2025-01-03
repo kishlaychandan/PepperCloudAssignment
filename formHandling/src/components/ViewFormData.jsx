@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-
+import config from "../config";
 const ViewFormData = () => {
   const { id } = useParams();
   const [form, setForm] = useState(null);
@@ -8,7 +8,7 @@ const ViewFormData = () => {
   useEffect(() => {
     const fetchFormData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/forms/${id}`);
+        const response = await fetch(`${config.API_BASE_URL}/forms/${id}`);
         const data = await response.json();
         setForm(data);
       } catch (error) {

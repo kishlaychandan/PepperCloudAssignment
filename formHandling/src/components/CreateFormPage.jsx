@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import FormInput from "./FormInput";
+import config from "../config"; // Import the config file
 
 const CreateFormPage = () => {
   const [title, setTitle] = useState("Untitled Form");
@@ -31,18 +32,23 @@ const CreateFormPage = () => {
       return;
     }
 
-    const response = await fetch("http://localhost:5000/api/forms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, inputs }),
-    });
+    try {
+      const response = await fetch(`${config.API_BASE_URL}/forms`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, inputs }),
+      });
 
-    if (response.ok) {
-      alert("Form saved successfully!");
-      setTitle("Untitled Form");
-      setInputs([]);
-    } else {
-      alert("Failed to save the form. Please try again.");
+      if (response.ok) {
+        alert("Form saved successfully!");
+        setTitle("Untitled Form");
+        setInputs([]);
+      } else {
+        alert("Failed to save the form. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error saving the form:", error);
+      alert("An error occurred. Please try again.");
     }
   };
 
