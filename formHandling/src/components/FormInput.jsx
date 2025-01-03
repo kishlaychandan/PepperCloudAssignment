@@ -16,13 +16,13 @@ const FormInput = ({ input, onDelete, onChange }) => {
       </div>
       <div className="mb-3">
         <label className="block text-sm font-semibold text-gray-600 mb-1">
-          Title
+          Field Name (Title)
         </label>
         <input
           type="text"
           value={title}
           onChange={(e) => onChange(id, "title", e.target.value)}
-          placeholder="Enter title for the input"
+          placeholder={`Enter a field name for ${type}`}
           className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
@@ -31,10 +31,10 @@ const FormInput = ({ input, onDelete, onChange }) => {
           Placeholder
         </label>
         <input
-          type="text"
+          type={type} // Dynamically set the input type
           value={placeholder}
           onChange={(e) => onChange(id, "placeholder", e.target.value)}
-          placeholder="Enter placeholder text"
+          placeholder={`Enter placeholder for ${type}`}
           className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>

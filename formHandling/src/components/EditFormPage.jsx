@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import config from "../config";
+
 const EditFormPage = () => {
-  const { id } = useParams(); // Use the useParams hook to get the form ID
+  const { id } = useParams(); // Get the form ID from the URL
   const [form, setForm] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -58,20 +59,44 @@ const EditFormPage = () => {
             <p className="text-gray-700 mb-2">
               Input Type: <span className="font-semibold">{input.type}</span>
             </p>
-            <input
-              type="text"
-              value={input.title}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  inputs: form.inputs.map((i, idx) =>
-                    idx === index ? { ...i, title: e.target.value } : i
-                  ),
-                })
-              }
-              placeholder="Input Title"
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="mb-3">
+              <label className="block text-sm font-semibold text-gray-600 mb-1">
+                Input Title
+              </label>
+              <input
+                type="text"
+                value={input.title}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    inputs: form.inputs.map((i, idx) =>
+                      idx === index ? { ...i, title: e.target.value } : i
+                    ),
+                  })
+                }
+                placeholder={`Enter title for ${input.type}`}
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="mb-3">
+              <label className="block text-sm font-semibold text-gray-600 mb-1">
+                Placeholder
+              </label>
+              <input
+                type={input.type} // Set the input type to the selected type
+                value={input.placeholder}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    inputs: form.inputs.map((i, idx) =>
+                      idx === index ? { ...i, placeholder: e.target.value } : i
+                    ),
+                  })
+                }
+                placeholder={`Enter placeholder for ${input.type}`}
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
           </div>
         ))}
       </div>

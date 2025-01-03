@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import FormInput from "./FormInput";
-import config from "../config"; // Import the config file
+import config from "../config";
 
 const CreateFormPage = () => {
-  const [title, setTitle] = useState("Untitled Form");
+  const [title, setTitle] = useState("");
   const [inputs, setInputs] = useState([]);
   const [showAddInput, setShowAddInput] = useState(false);
+  const [error, setError] = useState(""); // For dynamic validation messages
 
   const handleAddInput = (type) => {
     const newInput = {
       id: Date.now(),
       type,
-      title: "",
+      title: type, // Default the title to the type
       placeholder: "",
+      value: "",
     };
     setInputs([...inputs, newInput]);
   };
@@ -22,14 +24,22 @@ const CreateFormPage = () => {
   };
 
   const handleSaveForm = async () => {
+    setError(""); // Clear any previous error messages
+
     if (!title.trim()) {
-      alert("Form title cannot be empty!");
+      setError("Form title cannot be empty!");
       return;
     }
 
-    if (inputs.some((input) => !input.title.trim())) {
-      alert("All inputs must have a title!");
-      return;
+    for (const input of inputs) {
+      if (!input.title.trim()) {
+        setError(`Please provide a field name (title) for the ${input.type} input.`);
+        return;
+      }
+      if (!input.placeholder.trim()) {
+        setError(`Please provide a placeholder for the field "${input.title}" (${input.type}).`);
+        return;
+      }
     }
 
     try {
@@ -43,6 +53,7 @@ const CreateFormPage = () => {
         alert("Form saved successfully!");
         setTitle("Untitled Form");
         setInputs([]);
+        setError(""); // Clear errors after success
       } else {
         alert("Failed to save the form. Please try again.");
       }
@@ -59,9 +70,10 @@ const CreateFormPage = () => {
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Form Title"
+        placeholder="write form name: Simple form 1"
         className="w-full p-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
+      {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
       <button
         onClick={() => setShowAddInput(!showAddInput)}
         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
