@@ -5,6 +5,7 @@ import EditFormPage from "./components/EditFormPage";
 import ViewFormPage from "./components/ViewFormPage";
 import ViewFormData from "./components/ViewFormData";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   return (
@@ -28,68 +29,14 @@ const App = () => {
   );
 };
 
-const Navbar = () => {
-  const { dark, toggleTheme } = useTheme();
 
-  return (
-    <nav
-      className={`flex justify-between items-center p-6 shadow-lg ${
-        dark ? "bg-gray-900 text-white" : "bg-slate-500 text-black"
-      }`}
-    >
-      {/* Navigation Links */}
-      <div className="flex space-x-8 text-lg font-medium">
-        <Link
-          to="/"
-          className={`hover:text-gray-400 transition duration-300 ${
-            dark ? "text-gray-200" : "text-white"
-          }`}
-        >
-          Home
-        </Link>
-        <Link
-          to="/create"
-          className={`hover:text-gray-400 transition duration-300 ${
-            dark ? "text-gray-200" : "text-white"
-          }`}
-        >
-          Create Form
-        </Link>
-        <Link
-          to="/forms"
-          className={`hover:text-gray-400 transition duration-300 ${
-            dark ? "text-gray-200" : "text-white"
-          }`}
-        >
-          View Forms
-        </Link>
-      </div>
-
-      {/* Theme Toggle Switch */}
-      <div className="flex items-center space-x-4">
-        <button
-          onClick={toggleTheme}
-          className={`relative w-12 h-6 rounded-full shadow-md focus:outline-none transition duration-300 ${
-            dark ? "bg-gray-700" : "bg-gray-300"
-          }`}
-        >
-          <span
-            className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white shadow transform transition-transform duration-300 ${
-              dark ? "translate-x-6" : "translate-x-0"
-            }`}
-          ></span>
-        </button>
-      </div>
-    </nav>
-  );
-};
 
 const HomePage = () => {
   const { dark } = useTheme();
 
   return (
     <div
-      className={`flex flex-col justify-center items-center w-full h-screen ${
+      className={`flex flex-col p-6 text-center justify-center items-center w-full h-screen ${
         dark ? "bg-gray-800 text-white" : "bg-slate-300 text-black"
       }`}
     >
