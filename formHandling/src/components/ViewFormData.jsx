@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import config from "../config";
+import { useTheme } from "../contexts/ThemeContext"; // Import ThemeContext
 
 const ViewFormData = () => {
   const { id } = useParams();
@@ -10,6 +11,7 @@ const ViewFormData = () => {
   const [formValues, setFormValues] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { dark } = useTheme(); // Using theme context
 
   useEffect(() => {
     const fetchFormData = async () => {
@@ -17,14 +19,12 @@ const ViewFormData = () => {
         const response = await axios.get(`${config.API_BASE_URL}/forms/${id}`);
         const inputs = response.data.inputs || [];
 
-        // Initialize `formValues` with empty strings for each input's _id
         const initialValues = inputs.reduce(
           (acc, input) => ({ ...acc, [input._id]: "" }),
           {}
         );
 
         setFormData(inputs);
-        console.log("inputs:", inputs);
         setFormValues(initialValues);
         setLoading(false);
       } catch (error) {
@@ -37,8 +37,6 @@ const ViewFormData = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log("name:", name, "value:", value);
-
     setFormValues((prevValues) => ({
       ...prevValues,
       [name]: value,
@@ -55,8 +53,6 @@ const ViewFormData = () => {
     }
 
     try {
-      // Submit form values
-      // await axios.post(`${config.API_BASE_URL}/forms/${id}/submit`, formValues);
       console.log("Form submitted:", formValues);
       alert("Form submitted successfully!");
       navigate(`/`);
@@ -69,7 +65,12 @@ const ViewFormData = () => {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className={`w-full min-h-screen  p-6 ${dark ? "bg-gray-800 text-white" : "bg-white text-gray-900"}`}>
+      <div
+      className={`max-w-4xl mx-auto p-6 shadow-2xl ${
+        dark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
+      }`}
+    >
       <h2 className="text-3xl font-bold mb-6">View and Fill Form</h2>
 
       {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -82,21 +83,30 @@ const ViewFormData = () => {
             </label>
             <input
               type={input.type || "text"}
-              name={input._id} 
-              value={formValues[input._id] || ""} 
-              onChange={handleInputChange} 
+              name={input._id}
+              value={formValues[input._id] || ""}
+              onChange={handleInputChange}
               placeholder={input.placeholder || ""}
-              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full p-3 border rounded-md focus:outline-none ${
+                dark
+                  ? "bg-gray-700 border-gray-600 text-white focus:ring-blue-400"
+                  : "bg-white border-gray-300 text-gray-900 focus:ring-blue-500"
+              }`}
             />
           </div>
         ))}
         <button
           type="submit"
-          className="w-full px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
+          className={`w-full px-6 py-3 rounded-md focus:outline-none ${
+            dark
+              ? "bg-blue-600 hover:bg-blue-700 text-white"
+              : "bg-blue-500 hover:bg-blue-600 text-white"
+          }`}
         >
           Submit Form
         </button>
       </form>
+    </div>
     </div>
   );
 };
