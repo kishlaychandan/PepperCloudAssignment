@@ -10,29 +10,33 @@ const CreateFormPage = () => {
   const [showAddInput, setShowAddInput] = useState(false);
   const [error, setError] = useState(""); // For dynamic validation messages
 
+  // Handle adding new input fields
   const handleAddInput = (type) => {
     const newInput = {
       id: Date.now(),
       type,
-      title: type, // Default the title to the type
-      placeholder: "",
-      value: "",
+      title: "",
+      placeholder: "", // Placeholder is set to "Text"
     };
     setInputs([...inputs, newInput]);
   };
 
+  // Handle deleting input fields
   const handleDeleteInput = (id) => {
     setInputs(inputs.filter((input) => input.id !== id));
   };
 
+  // Save form data
   const handleSaveForm = async () => {
     setError(""); // Clear any previous error messages
 
+    // Validate form title
     if (!title.trim()) {
       setError("Form title cannot be empty!");
       return;
     }
 
+    // Validate each input field
     for (const input of inputs) {
       if (!input.title.trim()) {
         setError(`Please provide a field name (title) for the ${input.type} input.`);
@@ -44,17 +48,21 @@ const CreateFormPage = () => {
       }
     }
 
+    // Send the form data to the backend
     try {
+      console.log("Sending form data:", { title, inputs });
+      
       const response = await fetch(`${config.API_BASE_URL}/forms`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, inputs }),
       });
-
+      console.log("Response:", response);
+      
       if (response.ok) {
         alert("Form saved successfully!");
-        setTitle("Untitled Form");
-        setInputs([]);
+        setTitle(""); // Reset form title
+        setInputs([]); // Reset inputs
         setError(""); // Clear errors after success
       } else {
         alert("Failed to save the form. Please try again.");
@@ -72,6 +80,8 @@ const CreateFormPage = () => {
       }`}
     >
       <h1 className="text-4xl font-bold mb-8">Create New Form</h1>
+
+      {/* Form Title Input */}
       <input
         type="text"
         value={title}
@@ -83,13 +93,20 @@ const CreateFormPage = () => {
             : "border-gray-300 text-black bg-white focus:ring-blue-500"
         }`}
       />
-      {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+      {/* Title Validation Message */}
+      {error && title.trim() === "" && (
+        <p className="text-red-500 text-sm mb-4">{error}</p>
+      )}
+
+      {/* Show Add Input Button */}
       <button
         onClick={() => setShowAddInput(!showAddInput)}
         className="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
       >
         {showAddInput ? "Close Add Input" : "Add Input"}
       </button>
+
+      {/* Add Input Types */}
       {showAddInput && (
         <div className="flex flex-wrap gap-4 mt-6">
           {["text", "email", "password", "date", "number"].map((type) => (
@@ -103,6 +120,8 @@ const CreateFormPage = () => {
           ))}
         </div>
       )}
+
+      {/* Display Input Fields */}
       <div className="mt-6 space-y-4 w-full max-w-2xl">
         {inputs.map((input) => (
           <FormInput
@@ -119,6 +138,8 @@ const CreateFormPage = () => {
           />
         ))}
       </div>
+
+      {/* Save Form Button */}
       <button
         onClick={handleSaveForm}
         className="mt-6 px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"

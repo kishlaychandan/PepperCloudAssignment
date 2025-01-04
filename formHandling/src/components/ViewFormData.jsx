@@ -1,72 +1,102 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 import config from "../config";
-import { useTheme } from "../contexts/ThemeContext"; // Assuming you have this context
 
 const ViewFormData = () => {
   const { id } = useParams();
-  const [form, setForm] = useState(null);
-  const { dark } = useTheme(); // Accessing theme context (dark or light mode)
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState([]);
+  const [formValues, setFormValues] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchFormData = async () => {
       try {
-        const response = await fetch(`${config.API_BASE_URL}/forms/${id}`);
-        const data = await response.json();
-        setForm(data);
+        const response = await axios.get(`${config.API_BASE_URL}/forms/${id}`);
+        const inputs = response.data.inputs || [];
+
+        // Initialize `formValues` with empty strings for each input's _id
+        const initialValues = inputs.reduce(
+          (acc, input) => ({ ...acc, [input._id]: "" }),
+          {}
+        );
+
+        setFormData(inputs);
+        console.log("inputs:", inputs);
+        setFormValues(initialValues);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching form data:", error);
+        setError("Failed to fetch form data.");
       }
     };
-
     fetchFormData();
   }, [id]);
 
-  if (!form) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-500 text-xl">Loading...</p>
-      </div>
-    );
-  }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    console.log("name:", name, "value:", value);
+
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    for (const input of formData) {
+      if (!formValues[input._id]) {
+        setError(`Please fill in the ${input.title} field.`);
+        return;
+      }
+    }
+
+    try {
+      // Submit form values
+      // await axios.post(`${config.API_BASE_URL}/forms/${id}/submit`, formValues);
+      console.log("Form submitted:", formValues);
+      alert("Form submitted successfully!");
+      navigate(`/`);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setError("There was an error submitting the form.");
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
-    <div
-      className={`w-full h-screen flex justify-center items-center ${dark ? "bg-gray-800 text-white" : "bg-white text-black"}`}
-    >
-      <div className="max-w-lg w-full p-6 shadow-2xl rounded-lg">
-        <h1
-          className={`text-2xl font-bold text-center mb-6 ${
-            dark ? "text-white" : "text-gray-800"
-          }`}
+    <div className="max-w-4xl mx-auto p-6">
+      <h2 className="text-3xl font-bold mb-6">View and Fill Form</h2>
+
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+
+      <form onSubmit={handleSubmit}>
+        {formData.map((input) => (
+          <div key={input._id} className="mb-6">
+            <label className="block text-lg font-semibold mb-2">
+              {input.title}
+            </label>
+            <input
+              type={input.type || "text"}
+              name={input._id} 
+              value={formValues[input._id] || ""} 
+              onChange={handleInputChange} 
+              placeholder={input.placeholder || ""}
+              className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        ))}
+        <button
+          type="submit"
+          className="w-full px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
         >
-          {form.title}
-        </h1>
-        <form className="space-y-4">
-          {form.inputs.map((input, index) => (
-            <div key={index} className="flex flex-col">
-              <label
-                className={`font-medium mb-2 ${
-                  dark ? "text-white" : "text-gray-700"
-                }`}
-              >
-                {input.title}
-              </label>
-              <input
-                type={input.type}
-                placeholder={input.placeholder || "Enter value"}
-                value={input.placeholder || ""} // Use the actual value or fallback to an empty string
-                readOnly
-                className={`border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  dark
-                    ? "border-gray-600 bg-gray-700 text-white"
-                    : "border-gray-300 bg-gray-100 text-gray-700"
-                }`}
-              />
-            </div>
-          ))}
-        </form>
-      </div>
+          Submit Form
+        </button>
+      </form>
     </div>
   );
 };
