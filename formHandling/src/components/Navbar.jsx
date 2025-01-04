@@ -19,7 +19,7 @@ const Navbar = () => {
     >
       {/* Logo / Brand Name */}
       <div className="text-xl font-bold">
-        <Link to="/">Brand</Link>
+        <Link to="/">Pepper</Link>
       </div>
 
       {/* Hamburger Icon for Small Screens */}
@@ -98,7 +98,7 @@ const Navbar = () => {
           {/* Theme Toggle for Small Screens */}
           <button
             onClick={toggleTheme}
-            className={`relative w-12 h-6 rounded-full shadow-md focus:outline-none mx-auto transition duration-300 ${
+            className={`border border-red-300 relative w-12 h-6 rounded-full shadow-md focus:outline-none mx-auto transition duration-300 ${
               dark ? "bg-gray-700" : "bg-gray-300"
             }`}
           >
