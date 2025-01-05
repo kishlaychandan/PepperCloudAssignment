@@ -77,5 +77,5 @@ A dynamic and interactive form builder application that allows users to create, 
 ### Clone the Repository
 
 ```bash
-git clone <repository-link>
-cd form-builder-app
+git clone <https://github.com/kishlaychandan/PepperCloudAssignment>
+cd peppercloud
