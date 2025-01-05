@@ -21,6 +21,10 @@ A dynamic and interactive form builder application that allows users to create, 
   - Displays the form in a view-only mode with input fields.
   - Allows users to enter data with all type validations working (e.g., email validation).
   - Includes a submit button to submit the form.inputs.
+- **Theme Modes (Dark & Light Mode):**
+  - The application supports both **Dark Mode** and **Light Mode** themes.
+  - Users can toggle between the two modes, providing a personalized user experience.
+  - The theme persists across page reloads.
 
 ## Technologies
 
