@@ -3,7 +3,7 @@
 A dynamic and interactive form builder application that allows users to create, edit, view, and manage forms. Users can customize forms with various input types such as email, text, password, number, and date. The application also supports drag-and-drop functionality for rearranging form fields and allows form responses to be submitted.
 
 ---
-![Form Builder](image.png)
+![Form Builder](img.png)
 
 ## Features
 
