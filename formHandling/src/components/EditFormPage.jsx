@@ -10,6 +10,7 @@ const EditFormPage = () => {
   const [form, setForm] = useState({ title: "", inputs: [] });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [draggedIndex, setDraggedIndex] = useState(null);
 
   useEffect(() => {
     const fetchFormData = async () => {
@@ -45,6 +46,27 @@ const EditFormPage = () => {
     }
   };
 
+  // Handle drag start
+  const handleDragStart = (index) => {
+    setDraggedIndex(index);
+  };
+
+  // Handle drop event
+  const handleDrop = (e, index) => {
+    e.preventDefault();
+    if (draggedIndex !== null) {
+      const newInputs = [...form.inputs];
+      const [draggedInput] = newInputs.splice(draggedIndex, 1); 
+      newInputs.splice(index, 0, draggedInput); 
+      setForm({ ...form, inputs: newInputs });
+    }
+  };
+
+  // Handle drag over
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
   if (loading) return <p>Loading...</p>;
 
   return (
@@ -73,8 +95,12 @@ const EditFormPage = () => {
           {/* Dynamic Form Fields */}
           {form.inputs.map((input, index) => (
             <div
-              key={index}
-              className={`space-y-2 border p-5 rounded ${
+              key={input.id || index} 
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDrop={(e) => handleDrop(e, index)}
+              onDragOver={handleDragOver}
+              className={`space-y-2 cursor-pointer border p-5 rounded ${
                 dark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
               }`}
             >

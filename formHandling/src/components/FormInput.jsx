@@ -1,9 +1,10 @@
 import React from "react";
-
+import { useTheme } from "../contexts/ThemeContext";
 const FormInput = ({ input, onDelete, onChange }) => {
+  const { dark } = useTheme();
   return (
-    <div className="flex items-center space-x-4 border p-4 rounded-md bg-white shadow-md">
-      <div className="w-full">
+    <div className={`flex ${dark ? "bg-gray-800 text-white" : "bg-slate-300 text-black"} items-center space-x-4 border p-4 rounded-md $ shadow-md`}>
+      <div className={`w-full ${dark ? " text-black" : "text-slate-600"}`}>
         <input
           type="text"
           value={input.title}
